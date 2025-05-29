@@ -31,7 +31,7 @@
                         <i class="fas fa-arrow-trend-up"></i>
                     </div>
                 </div>
-                <div class="metric-value">${{ number_format($totalIncome, 2) }}</div>
+                <div class="metric-value">Rp {{ number_format($totalIncome, 2) }}</div>
                 <div class="metric-label">Monthly Income</div>
             </div>
 
@@ -41,7 +41,7 @@
                         <i class="fas fa-arrow-trend-down"></i>
                     </div>
                 </div>
-                <div class="metric-value">${{ number_format($totalExpense, 2) }}</div>
+                <div class="metric-value">Rp {{ number_format($totalExpense, 2) }}</div>
                 <div class="metric-label">Monthly Expenses</div>
             </div>
 
@@ -81,6 +81,10 @@
                                 </option>
                             @endforeach
                         </select>
+
+                        <small class="form-text text-muted mt-2">Belum ada kategori yang sesuai?</small>
+                        <input type="text" class="form-control mt-1" name="new_category"
+                            placeholder="Tambah kategori baru (opsional)">
                     </div>
 
                     <div class="form-group">
@@ -135,24 +139,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($recentTransactions as $trx)
+
+                        @foreach ($transactions as $transaction)
                             <tr>
-                                <td>#TRX{{ str_pad($trx->id, 3, '0', STR_PAD_LEFT) }}</td>
-                                <td>{{ \Carbon\Carbon::parse($trx->date)->format('d M Y') }}</td>
-                                <td>
-                                    <span class="transaction-{{ $trx->type }}">
-                                        {{ ucfirst($trx->type) }}
-                                    </span>
-                                </td>
-                                <td>{{ $trx->category->name ?? 'No Category' }}</td>
-                                <td class="transaction-{{ $trx->type }}">
-                                    Rp {{ number_format($trx->amount, 0, ',', '.') }}
-                                </td>
-                                <td>{{ $trx->description }}</td>
+                                <td>{{ $transaction->id }}</td>
+                                <td>{{ $transaction->date }}</td>
+                                <td>{{ $transaction->type }}</td>
+                                <td>{{ $transaction->category->name ?? '-' }}</td>
+                                <td>{{ $transaction->amount }}</td>
+                                <td>{{ $transaction->description }}</td>
                             </tr>
                         @endforeach
                     </tbody>
-
                 </table>
             </div>
         </section>
@@ -176,13 +174,17 @@
     <script>
         const ctx = document.getElementById('luxuryChart').getContext('2d');
 
+        const months = @json($months);
+        const incomeData = @json($incomeData);
+        const expenseData = @json($expenseData);
+
         const luxuryChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                labels: months,
                 datasets: [{
                     label: 'Income',
-                    data: [42000, 45230, 41800, 47500, 44200, 45230],
+                    data: incomeData,
                     borderColor: '#475569',
                     backgroundColor: 'rgba(71, 85, 105, 0.1)',
                     borderWidth: 3,
@@ -194,7 +196,7 @@
                     pointRadius: 6
                 }, {
                     label: 'Expenses',
-                    data: [28000, 23180, 26500, 29200, 25800, 23180],
+                    data: expenseData,
                     borderColor: '#dc2626',
                     backgroundColor: 'rgba(220, 38, 38, 0.1)',
                     borderWidth: 3,
@@ -234,13 +236,16 @@
                         }
                     },
                     y: {
+                        min: 0,
+                        max: 20000000,
                         ticks: {
+                            stepSize: 5000000,
                             color: '#64748b',
                             font: {
                                 weight: 500
                             },
                             callback: function(value) {
-                                return '$' + (value / 1000).toFixed(0) + 'K';
+                                return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                             }
                         },
                         grid: {
@@ -254,12 +259,6 @@
                 }
             }
         });
-
-        document.querySelectorAll('.metric-card').forEach((card, index) => {
-            setInterval(() => {
-                const offset = Math.sin(Date.now() * 0.001 + index * 0.5) * 2;
-                card.style.transform = `translateY(${offset}px)`;
-            }, 16);
-        });
     </script>
+
 @endsection
