@@ -11,15 +11,27 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        $userId = $user->id; // *** Jangan lupa definisikan $userId ***
+        $userId = $user->id;
+
+        $query = Transaction::with('category')
+            ->where('user_id', $userId);
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('description', 'like', "%$search%")
+                    ->orWhereHas('category', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%$search%");
+                    })
+                    ->orWhere('type', 'like', "%$search%");
+            });
+        }
+
+        $transactions = $query->orderBy('date', 'desc')->paginate(10);
 
         $categories = Category::all();
-        $transactions = Transaction::where('user_id', $userId)
-            ->orderBy('date', 'desc')
-            ->get();
 
         $totalIncome = Transaction::where('user_id', $userId)
             ->where('type', 'income')
@@ -38,11 +50,10 @@ class TransactionController extends Controller
 
         $totalTransactions = Transaction::where('user_id', $userId)->count();
 
-        // Ambil total income per bulan selama 12 bulan terakhir
         $incomePerMonth = Transaction::select(
-                DB::raw("DATE_FORMAT(date, '%b') as month"),
-                DB::raw("SUM(amount) as total")
-            )
+            DB::raw("DATE_FORMAT(date, '%b') as month"),
+            DB::raw("SUM(amount) as total")
+        )
             ->where('user_id', $userId)
             ->where('type', 'income')
             ->whereBetween('date', [Carbon::now()->subYear()->startOfMonth(), Carbon::now()->endOfMonth()])
@@ -50,12 +61,11 @@ class TransactionController extends Controller
             ->orderBy(DB::raw("MIN(date)"))
             ->get();
 
-        // Ambil total expense per bulan selama 12 bulan terakhir
         $expensePerMonth = Transaction::select(
-                DB::raw("DATE_FORMAT(date, '%b') as month"),
-                DB::raw("SUM(amount) as total")
-            )
-            ->where('user_id', $userId) // *** harus sama: $userId ***
+            DB::raw("DATE_FORMAT(date, '%b') as month"),
+            DB::raw("SUM(amount) as total")
+        )
+            ->where('user_id', $userId)
             ->where('type', 'expense')
             ->whereBetween('date', [Carbon::now()->subYear()->startOfMonth(), Carbon::now()->endOfMonth()])
             ->groupBy('month')
@@ -75,11 +85,20 @@ class TransactionController extends Controller
         });
 
         return view('dashboard', compact(
-            'user', 'categories', 'transactions', 'balance', 
-            'recentTransactions', 'totalIncome', 'totalExpense', 
-            'totalTransactions', 'months', 'incomeData', 'expenseData'
+            'user',
+            'categories',
+            'transactions',
+            'balance',
+            'recentTransactions',
+            'totalIncome',
+            'totalExpense',
+            'totalTransactions',
+            'months',
+            'incomeData',
+            'expenseData'
         ));
     }
+
 
     public function store(Request $request)
     {
@@ -97,7 +116,7 @@ class TransactionController extends Controller
         if ($request->filled('new_category')) {
             $newCategory = Category::create([
                 'name' => $request->new_category,
-                'icon' => '', // optional
+                'icon' => '',
                 'user_id' => auth()->id(),
             ]);
             $categoryId = $newCategory->id;
@@ -113,5 +132,64 @@ class TransactionController extends Controller
         $transaction->save();
 
         return redirect()->route('dashboard')->with('success', 'Transaksi berhasil ditambahkan!');
+    }
+
+    public function edit($id)
+    {
+        $transaction = Transaction::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $categories = Category::where('user_id', auth()->id())->get();
+
+        return view('transactions.edit', compact('transaction', 'categories'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'type' => 'required|in:income,expense',
+            'category_id' => 'nullable|exists:categories,id',
+            'new_category' => 'nullable|string|max:100',
+            'amount' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+            'date' => 'required|date',
+        ]);
+
+        $transaction = Transaction::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $categoryId = $request->category_id;
+
+        if ($request->filled('new_category')) {
+            $newCategory = Category::create([
+                'name' => $request->new_category,
+                'icon' => '', // optional
+                'user_id' => auth()->id(),
+            ]);
+            $categoryId = $newCategory->id;
+        }
+
+        $transaction->update([
+            'type' => $request->type,
+            'category_id' => $categoryId,
+            'amount' => $request->amount,
+            'description' => $request->description,
+            'date' => $request->date,
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Transaksi berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        $transaction = Transaction::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $transaction->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Transaksi berhasil dihapus!');
     }
 }

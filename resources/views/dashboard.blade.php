@@ -122,10 +122,26 @@
         </div>
 
         <section class="transactions-panel">
-            <h3 class="panel-title">
-                <i class="fas fa-history"></i>
-                Recent Transactions
-            </h3>
+            <div class="panel-header">
+                <h3 class="panel-title">
+                    <i class="fas fa-history"></i>
+                    Recent Transactions
+                </h3>
+            </div>
+
+            <!-- Enhanced Search Form -->
+            <form action="{{ route('dashboard') }}" method="GET" class="search-form">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" name="search" class="search-input" placeholder="Search transactions..."
+                        value="{{ request('search') }}">
+                    <button class="search-btn" type="submit">
+                        <i class="fas fa-search"></i>
+                        <span>Search</span>
+                    </button>
+                </div>
+            </form>
+
             <div class="table-wrapper">
                 <table class="luxury-table">
                     <thead>
@@ -136,24 +152,56 @@
                             <th>Category</th>
                             <th>Amount</th>
                             <th>Description</th>
+                            <th class="actions-header">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-
                         @foreach ($transactions as $transaction)
-                            <tr>
+                            <tr class="table-row">
                                 <td>{{ $transaction->id }}</td>
                                 <td>{{ $transaction->date }}</td>
-                                <td>{{ $transaction->type }}</td>
+                                <td>
+                                    <span class="type-badge type-{{ strtolower($transaction->type) }}">
+                                        {{ $transaction->type }}
+                                    </span>
+                                </td>
                                 <td>{{ $transaction->category->name ?? '-' }}</td>
-                                <td>{{ $transaction->amount }}</td>
-                                <td>{{ $transaction->description }}</td>
+                                <td class="amount-cell">
+                                    <span class="amount">Rp {{ number_format($transaction->amount, 0, ',', '.') }}</span>
+                                </td>
+                                <td class="description-cell">{{ $transaction->description }}</td>
+                                <td class="actions-cell">
+                                    <div class="action-buttons">
+                                        <!-- Edit Button -->
+                                        <a href="{{ route('transactions.edit', $transaction->id) }}"
+                                            class="action-btn edit-btn" data-tooltip="Edit Transaction">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <!-- Delete Button -->
+                                        <form action="{{ route('transactions.destroy', $transaction->id) }}"
+                                            method="POST" class="delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-btn delete-btn"
+                                                data-tooltip="Delete Transaction"
+                                                onclick="return confirm('Are you sure you want to delete this transaction?')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+                <div class="pagination-wrapper">
+                    {{ $transactions->links() }}
+                </div>
             </div>
         </section>
+
+
 
         <div class="footer-actions">
             <a href="#" class="btn-outline">
@@ -164,10 +212,13 @@
                 <i class="fas fa-file-excel"></i>
                 Export Excel
             </a>
-            <button class="btn-outline btn-danger">
-                <i class="fas fa-sign-out-alt"></i>
-                Logout
-            </button>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="btn-outline btn-danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </form>
         </div>
     </div>
 

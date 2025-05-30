@@ -524,6 +524,285 @@
                 align-items: center;
             }
         }
+
+            /* Panel Header */
+            .panel-header {
+                margin-bottom: 2rem;
+            }
+
+            .panel-title {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: #1f2937;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .panel-title i {
+                color: #1f2937;
+                font-size: 1.25rem;
+            }
+
+            /* Enhanced Search Container */
+            .search-container {
+                margin-bottom: 2rem;
+                background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+                padding: 1.5rem;
+                border-radius: 16px;
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            }
+
+            .search-form {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .search-input-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+                background: white;
+                border-radius: 12px;
+                border: 2px solid #e2e8f0;
+                transition: all 0.3s ease;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .search-input-wrapper:focus-within {
+                border-color: #1f2937;
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            }
+
+            .search-icon {
+                position: absolute;
+                left: 1rem;
+                color: #9ca3af;
+                font-size: 1rem;
+                z-index: 2;
+            }
+
+            .search-input {
+                flex: 1;
+                padding: 1rem 1rem 1rem 3rem;
+                border: none;
+                outline: none;
+                font-size: 1rem;
+                color: #374151;
+                background: transparent;
+            }
+
+            .search-input::placeholder {
+                color: #9ca3af;
+            }
+
+            .search-btn {
+                padding: 1rem 1.5rem;
+                background: linear-gradient(135deg, #1f2937 0%, #1f2937 100%);
+                color: white;
+                border: none;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+
+            .search-btn:hover {
+                background: linear-gradient(135deg, #1f2937 0%, #1f2937 100%);
+                transform: translateY(-1px);
+            }
+
+            .search-btn i {
+                font-size: 0.875rem;
+            }
+
+            /* Table Enhancements */
+            .luxury-table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .luxury-table thead {
+                background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            }
+
+            .luxury-table th {
+                padding: 1.25rem 1rem;
+                text-align: left;
+                font-weight: 600;
+                color: #374151;
+                border-bottom: 2px solid #e5e7eb;
+                font-size: 0.875rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .actions-header {
+                text-align: center;
+                width: 120px;
+            }
+
+            .table-row {
+                transition: all 0.2s ease;
+            }
+
+            .table-row:hover {
+                background-color: #f9fafb;
+            }
+
+            .luxury-table td {
+                padding: 1rem;
+                border-bottom: 1px solid #f3f4f6;
+                color: #374151;
+            }
+
+            /* Type Badge */
+            .type-badge {
+                padding: 0.25rem 0.75rem;
+                border-radius: 6px;
+                font-size: 0.75rem;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .type-income {
+                background-color: #dcfce7;
+                color: #166534;
+            }
+
+            .type-expense {
+                background-color: #fee2e2;
+                color: #991b1b;
+            }
+
+            /* Amount Cell */
+            .amount-cell {
+                font-weight: 600;
+                color: #059669;
+            }
+
+            .description-cell {
+                max-width: 200px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            /* Action Buttons */
+            .actions-cell {
+                text-align: center;
+            }
+
+            .action-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .action-btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                border: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.875rem;
+                transition: all 0.2s ease;
+                cursor: pointer;
+                position: relative;
+                text-decoration: none;
+            }
+
+            .edit-btn {
+                background-color: #fef3c7;
+                color: #d97706;
+                border: 1px solid #fcd34d;
+            }
+
+            .edit-btn:hover {
+                background-color: #fde68a;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(217, 119, 6, 0.2);
+            }
+
+            .delete-btn {
+                background-color: #fee2e2;
+                color: #dc2626;
+                border: 1px solid #fca5a5;
+            }
+
+            .delete-btn:hover {
+                background-color: #fecaca;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(220, 38, 38, 0.2);
+            }
+
+            .delete-form {
+                display: inline;
+            }
+
+            /* Tooltip */
+            .action-btn[data-tooltip]:hover::after {
+                content: attr(data-tooltip);
+                position: absolute;
+                bottom: 120%;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #374151;
+                color: white;
+                padding: 0.5rem 0.75rem;
+                border-radius: 6px;
+                font-size: 0.75rem;
+                white-space: nowrap;
+                z-index: 10;
+            }
+
+            .action-btn[data-tooltip]:hover::before {
+                content: '';
+                position: absolute;
+                bottom: 110%;
+                left: 50%;
+                transform: translateX(-50%);
+                border: 4px solid transparent;
+                border-top-color: #374151;
+                z-index: 10;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .search-input-wrapper {
+                    flex-direction: column;
+                }
+
+                .search-btn {
+                    width: 100%;
+                    justify-content: center;
+                    border-radius: 0 0 12px 12px;
+                }
+
+                .luxury-table {
+                    font-size: 0.875rem;
+                }
+
+                .luxury-table th,
+                .luxury-table td {
+                    padding: 0.75rem 0.5rem;
+                }
+
+                .description-cell {
+                    max-width: 120px;
+                }
+            }
     </style>
 </head>
 
