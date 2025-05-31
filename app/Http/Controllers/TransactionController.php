@@ -31,6 +31,15 @@ class TransactionController extends Controller
 
         $transactions = $query->orderBy('date', 'desc')->paginate(10);
 
+         // Filter tanggal
+    if ($request->filled('start_date') && $request->filled('end_date')) {
+        $query->whereBetween('date', [$request->start_date, $request->end_date]);
+    }
+
+    // Filter berdasarkan hari
+    if ($request->filled('day')) {
+        $query->whereRaw("DAYNAME(date) = ?", [$request->day]);
+    }
         $categories = Category::all();
 
         $totalIncome = Transaction::where('user_id', $userId)

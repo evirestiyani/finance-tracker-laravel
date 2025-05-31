@@ -22,5 +22,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/transaction/{id}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
     Route::put('/transaction/{id}', [TransactionController::class, 'update'])->name('transactions.update');
     Route::delete('/transaction/{id}', [TransactionController::class, 'destroy'])->name('transactions.destroy');
-    Route::get('/report/export-pdf', [ReportController::class, 'exportPdf'])->name('report.exportPdf');
+    Route::get('/export-pdf', [ReportController::class, 'exportPDF'])->name('export.pdf');
 });

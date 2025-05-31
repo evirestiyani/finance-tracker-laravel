@@ -178,7 +178,6 @@
 </div>
 
 <style>
-/* Page Header Enhancements */
 .page-header-section {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border: 1px solid #e2e8f0;
@@ -586,5 +585,4 @@
     }
 }
 </style>
-
 @endsection

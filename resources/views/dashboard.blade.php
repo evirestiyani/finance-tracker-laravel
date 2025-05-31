@@ -204,14 +204,10 @@
 
 
         <div class="footer-actions">
-            <a href="#" class="btn-outline">
-                <i class="fas fa-file-pdf"></i>
-                Export PDF
+            <a href="{{ route('export.pdf') }}" class="btn-outline">
+                <i class="fas fa-file-pdf"></i> Export PDF
             </a>
-            <a href="#" class="btn-outline">
-                <i class="fas fa-file-excel"></i>
-                Export Excel
-            </a>
+
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="btn-outline btn-danger">
@@ -221,95 +217,4 @@
             </form>
         </div>
     </div>
-
-    <script>
-        const ctx = document.getElementById('luxuryChart').getContext('2d');
-
-        const months = @json($months);
-        const incomeData = @json($incomeData);
-        const expenseData = @json($expenseData);
-
-        const luxuryChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: months,
-                datasets: [{
-                    label: 'Income',
-                    data: incomeData,
-                    borderColor: '#475569',
-                    backgroundColor: 'rgba(71, 85, 105, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#475569',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6
-                }, {
-                    label: 'Expenses',
-                    data: expenseData,
-                    borderColor: '#dc2626',
-                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#dc2626',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#374151',
-                            font: {
-                                weight: 600,
-                                size: 14
-                            },
-                            usePointStyle: true
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            color: '#64748b',
-                            font: {
-                                weight: 500
-                            }
-                        },
-                        grid: {
-                            color: '#e2e8f0'
-                        }
-                    },
-                    y: {
-                        min: 0,
-                        max: 20000000,
-                        ticks: {
-                            stepSize: 5000000,
-                            color: '#64748b',
-                            font: {
-                                weight: 500
-                            },
-                            callback: function(value) {
-                                return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                            }
-                        },
-                        grid: {
-                            color: '#e2e8f0'
-                        }
-                    }
-                },
-                animation: {
-                    duration: 2000,
-                    easing: 'easeOutQuart'
-                }
-            }
-        });
-    </script>
-
 @endsection
